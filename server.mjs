@@ -40,6 +40,6 @@ io.on('connection', socket => {
 
     // Listen for chat message
     socket.on('chatMessage', (message) => {
-        io.emit('message', message);
+        io.emit('message', new Message('Mo', message).fromMessage());
     });
 })

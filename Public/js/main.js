@@ -23,9 +23,9 @@ chatForm.addEventListener('submit', (event) => {
 function insertMessage(message) {
     let messageTag = `
        <div class="message">
-                <p class="meta">Brad <span>9:12pm</span></p>
+                <p class="meta">${message.username} <span>${message.time}</span></p>
                 <p class="text">
-                   ${message}
+                   ${message.text}
                 </p>
             </div>`;
     chatMessages.insertAdjacentHTML('beforeend', messageTag);
