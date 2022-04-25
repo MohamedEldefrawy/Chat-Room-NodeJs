@@ -14,11 +14,31 @@ const io = new Socket(server, {});
 app.set('view engine', 'ejs');
 app.use(express.json());
 
-// Set static folder
 app.use(express.static(path.join(__dirname, 'Public')));
 
 app.use(Routes.getRouter());
 
+
 server.listen(PORT, () => {
     console.log(`Server started on http://localhost:${PORT}`);
 });
+
+//Run When client connect
+io.on('connection', socket => {
+
+    // Welcome current user
+    socket.emit('message', 'Welcome to ChatJutsu');
+
+    // Broadcast when a user connects
+    socket.broadcast.emit('message', "A user has joined the chat");
+
+    // Broadcast when a user disconnect
+    socket.on('disconnect', () => {
+        io.emit('message', 'A user has left the chat');
+    });
+
+    // Listen for chat message
+    socket.on('chatMessage', (message) => {
+        io.emit('message', message);
+    });
+})

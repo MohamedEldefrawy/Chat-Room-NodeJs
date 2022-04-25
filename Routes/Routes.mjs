@@ -9,6 +9,7 @@ export class Routes {
         let chatController = new ChatController();
         router.route('/').get(chatController.home);
         router.route('/home').get(chatController.home);
+        router.route('/chat').get(chatController.chat);
         return router;
     }
 }
