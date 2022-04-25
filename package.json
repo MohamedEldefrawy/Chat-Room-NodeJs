@@ -1,0 +1,18 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "realtime chat app",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "author": "Mohamed Eldefrawy",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.7",
+    "express": "^4.17.3",
+    "moment": "^2.29.3",
+    "socket.io": "^4.5.0"
+  }
+}
