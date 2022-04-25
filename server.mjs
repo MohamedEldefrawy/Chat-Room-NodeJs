@@ -3,6 +3,7 @@ import {Server} from 'http';
 import {Server as Socket} from "socket.io";
 import path from 'path';
 import {Routes} from "./Routes/Routes.mjs";
+import {Message} from "./utilities/Messege.mjs";
 
 
 const PORT = 3500 || process.env.PORT;
@@ -27,14 +28,14 @@ server.listen(PORT, () => {
 io.on('connection', socket => {
 
     // Welcome current user
-    socket.emit('message', 'Welcome to ChatJutsu');
+    socket.emit('message', new Message('Mo', 'Welcome to ChatJutsu').fromMessage());
 
     // Broadcast when a user connects
-    socket.broadcast.emit('message', "A user has joined the chat");
+    socket.broadcast.emit('message', new Message('Mo', 'Player connected').fromMessage());
 
     // Broadcast when a user disconnect
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left the chat');
+        io.emit('message', new Message('Mo', 'Player Disconnected').fromMessage());
     });
 
     // Listen for chat message

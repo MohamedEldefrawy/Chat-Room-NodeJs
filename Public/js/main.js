@@ -5,6 +5,9 @@ const chatMessages = document.getElementById('chatMessages');
 
 socket.on('message', (message) => {
     insertMessage(message);
+
+    //Scroll down
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 // Message submit
