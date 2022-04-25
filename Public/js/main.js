@@ -2,6 +2,10 @@ const socket = io();
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById('chatMessages');
 
+// Read query string
+const {queryString} = Qs.parse(location.search, {
+    ignorePunctuation: true,
+});
 
 socket.on('message', (message) => {
     insertMessage(message);
