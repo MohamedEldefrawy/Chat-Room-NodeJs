@@ -3,7 +3,7 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById('chatMessages');
 
 // Read query string
-const {queryString} = Qs.parse(location.search, {
+const queryString = Qs.parse(location.search, {
     ignorePunctuation: true,
 });
 
@@ -34,3 +34,6 @@ function insertMessage(message) {
             </div>`;
     chatMessages.insertAdjacentHTML('beforeend', messageTag);
 }
+
+// join chatroom
+socket.emit('join', {username: queryString["?username"], room: queryString["room"]})

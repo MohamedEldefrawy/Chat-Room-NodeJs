@@ -1,9 +1,10 @@
 import express from "express";
+import path from 'path';
 import {Server} from 'http';
 import {Server as Socket} from "socket.io";
-import path from 'path';
-import {Routes} from "./Routes/Routes.mjs";
+import {Routes} from "./routes/Routes.mjs";
 import {Message} from "./utilities/Messege.mjs";
+import {User} from "./model/User.mjs";
 
 
 const PORT = 3500 || process.env.PORT;
@@ -11,6 +12,7 @@ const app = new express();
 const server = new Server(app);
 const __dirname = path.resolve();
 const io = new Socket(server, {});
+let users = [];
 
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -27,19 +29,43 @@ server.listen(PORT, () => {
 //Run When client connect
 io.on('connection', socket => {
 
-    // Welcome current user
-    socket.emit('message', new Message('Mo', 'Welcome to ChatJutsu').fromMessage());
+    // run when client connect
+    socket.on('join', (data) => {
+        let newUser = new User();
+        newUser.name = data.username;
+        newUser.room = data.room;
+        newUser.id = socket.id;
 
-    // Broadcast when a user connects
-    socket.broadcast.emit('message', new Message('Mo', 'Player connected').fromMessage());
+        users.push(newUser);
 
-    // Broadcast when a user disconnect
-    socket.on('disconnect', () => {
-        io.emit('message', new Message('Mo', 'Player Disconnected').fromMessage());
+        socket.join(newUser.room);
+
+        // Welcome current user
+        socket.emit('message', new Message("ChatJutsu", `Welcome ${newUser.name}  to ChatJutsu`).fromMessage());
+
+        // Broadcast when a user connects
+        socket.broadcast.to(newUser.room).emit('message', new Message("ChatJutsu", `${newUser.name} connected`).fromMessage());
+
     });
 
     // Listen for chat message
     socket.on('chatMessage', (message) => {
-        io.emit('message', new Message('Mo', message).fromMessage());
+        let currentUser = users.find(user => {
+            if (user.id === socket.id)
+                return user;
+        });
+        io.to(currentUser.room).emit('message', new Message(currentUser.name, message).fromMessage());
+    });
+
+    // Broadcast when a user disconnect
+    socket.on('disconnect', () => {
+        let currentUser = users.find(user => {
+            if (user.id === socket.id)
+                return user;
+        });
+        let currentUserIndex = users.findIndex(user => user.id === currentUser.id);
+
+        io.to(currentUser.room).emit('message', new Message("ChatJutsu", `${currentUser.name} has been left`).fromMessage());
+        users.splice(currentUserIndex, 1);
     });
 })

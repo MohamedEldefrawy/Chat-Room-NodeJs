@@ -1,5 +1,5 @@
 import express from "express";
-import {ChatController} from "../Controllers/ChatController.mjs";
+import {ChatController} from "../controllers/ChatController.mjs";
 
 export class Routes {
 
