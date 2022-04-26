@@ -13,6 +13,7 @@ const server = new Server(app);
 const __dirname = path.resolve();
 const io = new Socket(server, {});
 const users = [];
+const Bot = "Chat No Jutsu"
 
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -61,11 +62,11 @@ io.on('connection', socket => {
         getUsersOfRoom(socket, newUser);
 
         // Welcome current user
-        socket.emit('message', new Message("ChatJutsu", `Welcome ${newUser.name}  to ChatJutsu`).fromMessage());
+        socket.emit('message', new Message(Bot, `Welcome ${newUser.name}  to ${newUser.room} room`).fromMessage());
 
 
         // Broadcast when a user connects
-        socket.broadcast.to(newUser.room).emit('message', new Message("ChatJutsu", `${newUser.name} connected`).fromMessage());
+        socket.broadcast.to(newUser.room).emit('message', new Message(Bot, `${newUser.name} connected`).fromMessage());
 
     });
 
@@ -87,7 +88,7 @@ io.on('connection', socket => {
 
         let currentUserIndex = users.findIndex(user => user.id === currentUser.id);
 
-        io.to(currentUser.room).emit('message', new Message("ChatJutsu", `${currentUser.name} has been left`).fromMessage());
+        io.to(currentUser.room).emit('message', new Message(Bot, `${currentUser.name} has been left`).fromMessage());
 
         users.splice(currentUserIndex, 1);
 
