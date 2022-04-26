@@ -1,6 +1,8 @@
 const socket = io();
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById('chatMessages');
+const usersArea = document.getElementById('users');
+const btnLeave = document.getElementById('btnLeave');
 
 // Read query string
 const queryString = Qs.parse(location.search, {
@@ -37,3 +39,19 @@ function insertMessage(message) {
 
 // join chatroom
 socket.emit('join', {username: queryString["?username"], room: queryString["room"]})
+
+// Get users and room
+socket.on('roomUsers', (data) => {
+    let usersElement = ``;
+    usersArea.innerHTML = "";
+    for (const user of data.users) {
+        if (user._name !== queryString["?username"]) {
+            usersElement += `<li>${user._name}</li>`;
+            usersArea.insertAdjacentHTML('beforeend', usersElement);
+        }
+    }
+});
+
+btnLeave.addEventListener('click', (event) => {
+    socket.emit('disconnect');
+});

@@ -12,7 +12,7 @@ const app = new express();
 const server = new Server(app);
 const __dirname = path.resolve();
 const io = new Socket(server, {});
-let users = [];
+const users = [];
 
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -26,8 +26,24 @@ server.listen(PORT, () => {
     console.log(`Server started on http://localhost:${PORT}`);
 });
 
+function getUsersOfRoom(socket, currentUser) {
+    if (currentUser == null) {
+        socket.emit('roomUsers', {
+            users: users
+        });
+    } else {
+        socket.to(currentUser.room).emit('roomUsers', {
+            room: currentUser.room,
+            users: users.filter(user => user.room === currentUser.room)
+        });
+    }
+
+}
+
 //Run When client connect
 io.on('connection', socket => {
+
+    getUsersOfRoom(socket, null);
 
     // run when client connect
     socket.on('join', (data) => {
@@ -38,10 +54,15 @@ io.on('connection', socket => {
 
         users.push(newUser);
 
+
         socket.join(newUser.room);
+
+        // send room and users
+        getUsersOfRoom(socket, newUser);
 
         // Welcome current user
         socket.emit('message', new Message("ChatJutsu", `Welcome ${newUser.name}  to ChatJutsu`).fromMessage());
+
 
         // Broadcast when a user connects
         socket.broadcast.to(newUser.room).emit('message', new Message("ChatJutsu", `${newUser.name} connected`).fromMessage());
@@ -63,9 +84,14 @@ io.on('connection', socket => {
             if (user.id === socket.id)
                 return user;
         });
+
         let currentUserIndex = users.findIndex(user => user.id === currentUser.id);
 
         io.to(currentUser.room).emit('message', new Message("ChatJutsu", `${currentUser.name} has been left`).fromMessage());
+
         users.splice(currentUserIndex, 1);
+
+        // send room and users
+        getUsersOfRoom(socket, currentUser);
     });
 })
