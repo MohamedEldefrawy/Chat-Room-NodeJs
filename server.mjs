@@ -8,6 +8,7 @@ import {User} from "./model/User.mjs";
 
 
 const PORT = 3500 || process.env.PORT;
+const HOST = '0.0.0.0';
 const app = new express();
 const server = new Server(app);
 const __dirname = path.resolve();
@@ -23,9 +24,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(Routes.getRouter());
 
 
-server.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
-});
+server.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
+
 
 function getUsersOfRoom(socket, currentUser) {
     if (currentUser == null) {
