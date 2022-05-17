@@ -42,6 +42,7 @@ A chat room application
 * [moment.js](https://momentjs.com/)
 * [qs](https://www.npmjs.com/package/qs)
 * [nodemon](https://www.npmjs.com/package/nodemon)
+* [Docker](https://www.docker.com/)
 
 ## Authors
 
