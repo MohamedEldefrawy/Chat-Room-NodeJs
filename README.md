@@ -1,7 +1,7 @@
-
 # node.js Chat application
 
-A chat room application 
+A chat room application
+
 ## Table of contents
 
 - [Overview](#overview)
@@ -29,6 +29,10 @@ A chat room application
     ```
     npm run dev
     ```
+
+5) OR ```docker build . -t modafro/chat-jutsu```
+    1) ```docker run -p 3500:3500 -d modafro/chat-jutsu:latest```
+    2) The connect ```http://localhost:3500```
 
 ### Built with
 
